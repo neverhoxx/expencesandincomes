@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Accounting Finance</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
@@ -14,7 +13,7 @@
         <div class="container">
             <section class="sidebar">
                 <div class="name">
-                    <h1 class="name-title"><span>Yehor</span> Kiiakh</h1>
+                    <h1 class="name-title"><span id="username-display"></span>'s Finance</h1>
                 </div>
                 <nav class="sidebar-nav">
                     <ul class="sidebar-list">
@@ -22,8 +21,14 @@
                             <div class="sidebar-list-item-btn">
                                 <img src="https://www.svgrepo.com/show/520684/dashboard.svg" alt=""
                                     class="sidebar-list-item-btn-img pic">
-
                                 Dashboard
+                            </div>
+                        </li>
+                        <li class="sidebar-list-item">
+                            <div class="sidebar-list-item-btn">
+                                <img src="https://www.svgrepo.com/show/520684/dashboard.svg" alt=""
+                                    class="sidebar-list-item-btn-img pic">
+                                <button onclick="switchAccount()">Switch user</button>
                             </div>
                         </li>
                     </ul>
@@ -31,24 +36,22 @@
             </section>
 
             <main class="main">
-
                 <div class="main-container">
                     <h1>Accounting Finance</h1>
                     <div id="balance">Balance: 0 €</div>
 
                     <form id="expense-form">
-                        <input type="number" name="amount" placeholder="Summa" step="0.01" required>
-                        <input type="text" name="description" placeholder="Description" required>
-                        <select name="type">
+                        <input class="input" type="number" name="amount" placeholder="Summa" step="0.01">
+                        <input class="input" type="text" name="description" placeholder="Description">
+                        <select class="input" name="type">
                             <option value="income">Income</option>
                             <option value="expense">Expense</option>
                         </select>
-                        <button type="submit">Add</button>
+                        <button class="submit-btn" type="submit">Add</button>
                     </form>
 
-                    <h2>Operation history</h2>
+                    <h2 class="operation-title">Operation history</h2>
                     <div id="expenses-list"></div>
-
                 </div>
             </main>
         </div>

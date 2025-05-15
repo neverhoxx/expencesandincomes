@@ -1,9 +1,20 @@
 let expenses = [];
+let currentUser = localStorage.getItem('userId');
+
+if (!currentUser) {
+    currentUser = prompt("Enter your name:");
+    localStorage.setItem('userId', currentUser);
+}
+
+document.getElementById('username-display').textContent = currentUser;
 
 async function loadExpenses() {
+
     const response = await fetch('https://kool.krister.ee/chat/ykExspenses');
-    expenses = await response.json();
+    const allExpenses = await response.json();
+    expenses = allExpenses.filter(exp => exp.userId === currentUser);
     renderExpenses();
+
 }
 
 function renderExpenses() {
@@ -16,11 +27,11 @@ function renderExpenses() {
         const item = document.createElement('div');
         item.className = `expense-item ${expense.type}`;
         item.innerHTML = `
-      <span class="amount">${expense.amount} €</span>
-      <span class="description">${expense.description}</span>
-      <span class="date">${formatDate(expense.date)}</span>
-      <button onclick="deleteExpense(${expense.id})">Delete</button>
-    `;
+            <span class="amount">${expense.amount} €</span>
+            <span class="description">${expense.description}</span>
+            <span class="date">${formatDate(expense.date)}</span>
+            <button onclick="deleteExpense(${expense.id})">Delete</button>
+        `;
         container.appendChild(item);
     });
 
@@ -36,34 +47,56 @@ function updateBalance() {
     const balance = expenses.reduce((sum, exp) => {
         return exp.type === 'income' ? sum + exp.amount : sum - exp.amount;
     }, 0);
-
     document.getElementById('balance').textContent = `Balance: ${balance.toFixed(2)}€`;
 }
 
-function addExpense(amount, description, type) {
+async function addExpense(amount, description, type) {
     const newExpense = {
-        id: Date.now(),
         amount: parseFloat(amount),
         description,
         type,
-        date: new Date().toISOString()
+        date: new Date().toISOString(),
+        userId: currentUser
     };
 
-    expenses.push(newExpense);
-    renderExpenses();
 
-    fetch("https://kool.krister.ee/chat/ykExspenses", {
+    const response = await fetch("https://kool.krister.ee/chat/ykExspenses", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(newExpense)
     });
+
+    if (response.headers.get("content-length") !== "0") {
+        const savedExpense = await response.json();
+        expenses.push(savedExpense);
+    } else {
+        expenses.push(newExpense);
+    }
+
+    renderExpenses();
+
 }
 
-function deleteExpense(id) {
+
+async function deleteExpense(id) {
+
+    await fetch(`https://kool.krister.ee/chat/ykExspenses/${id}`, {
+        method: 'DELETE'
+    });
+
     expenses = expenses.filter(exp => exp.id !== id);
     renderExpenses();
+
+}
+
+function switchAccount() {
+    const newName = prompt("Enter new user name:");
+    if (newName) {
+        localStorage.setItem('userId', newName);
+        location.reload();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

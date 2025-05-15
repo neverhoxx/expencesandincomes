@@ -317,6 +317,17 @@ button {
     }
 }
 
+.input{
+    background-color: rgb(106, 91, 205, 0.1);
+
+    padding: 10px 20px;
+    border-radius: 15px;
+    border: 0.2px solid #6A5ACD;
+}
+
+.operation-title{
+    margin-top: 20px;
+}
 
 
   
