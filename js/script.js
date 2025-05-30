@@ -9,12 +9,10 @@ if (!currentUser) {
 document.getElementById('username-display').textContent = currentUser;
 
 async function loadExpenses() {
-
     const response = await fetch('https://kool.krister.ee/chat/ykExspenses');
     const allExpenses = await response.json();
     expenses = allExpenses.filter(exp => exp.userId === currentUser);
     renderExpenses();
-
 }
 
 function renderExpenses() {
@@ -27,7 +25,7 @@ function renderExpenses() {
         const item = document.createElement('div');
         item.className = `expense-item ${expense.type}`;
         item.innerHTML = `
-            <span class="amount">${expense.amount} €</span>
+            <span class="amount">${expense.amount.toFixed(2)} €</span>
             <span class="description">${expense.description}</span>
             <span class="date">${formatDate(expense.date)}</span>
             <button onclick="deleteExpense(${expense.id})">Delete</button>
@@ -59,7 +57,6 @@ async function addExpense(amount, description, type) {
         userId: currentUser
     };
 
-
     const response = await fetch("https://kool.krister.ee/chat/ykExspenses", {
         method: "POST",
         headers: {
@@ -72,23 +69,20 @@ async function addExpense(amount, description, type) {
         const savedExpense = await response.json();
         expenses.push(savedExpense);
     } else {
+        newExpense.id = Date.now();
         expenses.push(newExpense);
     }
 
     renderExpenses();
-
 }
 
-
 async function deleteExpense(id) {
-
     await fetch(`https://kool.krister.ee/chat/ykExspenses/${id}`, {
         method: 'DELETE'
     });
 
     expenses = expenses.filter(exp => exp.id !== id);
     renderExpenses();
-
 }
 
 function switchAccount() {
